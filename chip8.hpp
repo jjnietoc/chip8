@@ -1,5 +1,5 @@
-#ifndef CHIP8_H_
-#define CHIP8_H_
+#ifndef CHIP8_HPP_
+#define CHIP8_HPP_
 
 #include <array>
 #include <stack>
@@ -43,6 +43,7 @@ class Chip8 {
     void show_memory();
     void init();
     void gfx();
+    void game_loop();
 };
 
 

@@ -1,5 +1,5 @@
-#ifndef DISPLAY_H_
-#define DISPLAY_H_
+#ifndef DISPLAY_HPP_
+#define DISPLAY_HPP_
 
 #include <SDL2/SDL.h>
 
