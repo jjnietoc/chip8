@@ -3,6 +3,8 @@
 #include "chip8.h"
 #include <SDL2/SDL.h>
 #include <array>
+#include <sys/_types/_u_int16_t.h>
+#include <sys/_types/_u_int8_t.h>
 #include "display.h"
 
 Chip8::Chip8(){
@@ -48,11 +50,57 @@ void Chip8::graphics() {
     Chip8Display.RenderFrame();
    }
   }
+ 
+
 
 void Chip8::init() {
   I = 0;
   load_font();
   graphics();
+}
+
+void Chip8::loop() 
+{
+
+  u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
+  pc += 2;
+
+  u_int8_t x = (opcode >> 8) & 0x0F;
+  u_int8_t y = (opcode >> 4) & 0x0F;
+  u_int8_t nibble = opcode & 0x0F;
+  u_int16_t nnn = opcode & 0x0FFF;
+  u_int8_t kk = opcode & 0x0FF;
+
+  switch(opcode & 0xF000)
+  {
+    case(0x0000):
+      if(opcode == 0x00E0){
+      // screen clear
+      } else if(opcode == 0x00EE){
+          stack[sp--] = pc;
+        }
+    break;
+    case(0x1000): // jump
+      pc = nnn;
+      break;
+    case(0x2000): 
+      stack[sp++] = pc;
+      pc = nnn;
+      break;
+    case(0x6000): // set register vx
+      V[x] = kk;
+      break;
+    case(0x7000): // add value to register vx
+      V[x] += kk;
+      break;
+    case(0xA000): // set index to register I
+      I = nnn;
+      break;
+    case(0xD000): // display
+      // draw
+      break;
+    
+  }
 }
 
 Chip8::~Chip8() 

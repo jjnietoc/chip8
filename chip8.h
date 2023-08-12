@@ -2,6 +2,7 @@
 #define CHIP8_H_
 
 #include <array>
+#include <sys/_types/_u_int8_t.h>
 
 const int SIZE = 16;
 const int MEMSIZE = 4096;
@@ -31,7 +32,17 @@ class Chip8 {
     void load_font();
     void init();
     void graphics();
-    void game_loop();
+
+    // dissassembler and decoder functions
+    u_int16_t fetch_opcode();
+    u_int8_t fetch_x();
+    u_int8_t fetch_y();
+    u_int8_t fetch_nibble();
+    u_int16_t fetch_nnn();
+    u_int8_t fetch_kk();
+
+    // main loop function
+    void loop();
 
     ~Chip8(); // destructor
 };
