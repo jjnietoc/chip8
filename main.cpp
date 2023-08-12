@@ -1,10 +1,17 @@
 #include <iostream>
-#include "cpu.hpp"
-#include <array>
+#include "chip8.h"
 
 int main() {
-  CPU cpu; 
-  cpu.init();   // TODO: implement rest of features
+  Chip8 chip8; 
+  chip8.init();   // TODO: implement rest of features
   
+  // infinite loop
+  while(true)
+  {
+    //  decode {
+    //    execute
+    //  }
+    // }
+  }
   return 0;
 }
