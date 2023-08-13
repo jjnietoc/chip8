@@ -1,11 +1,12 @@
+#include <cstdint>
 #include <cstring>
 #include <iostream>
 #include "chip8.h"
 #include <SDL2/SDL.h>
 #include <array>
-#include <sys/_types/_u_int16_t.h>
-#include <sys/_types/_u_int8_t.h>
 #include "display.h"
+#include <fstream>
+#include <vector>
 
 Chip8::Chip8(){
   I = 0;
@@ -51,18 +52,45 @@ void Chip8::graphics() {
    }
   }
  
-
-
-void Chip8::init() {
+void Chip8::init() 
+{
   I = 0;
   load_font();
-  graphics();
+  // load_rom("ibm.ch8");
+  //graphics();
+  }
+
+void Chip8::load_rom(std::string const& path)
+{
+  std::ifstream rom(path, std::ios::binary | std::ios::ate);
+  std::ifstream::pos_type rom_size = rom.tellg();
+  std::vector<std::uint8_t> buffer(rom_size);
+  rom.seekg(0, std::ios::beg);
+  rom.read(reinterpret_cast<char*>(buffer.data()), rom_size);
+  for(int i = 0; i < rom_size; i++) {
+    memory[i + 512] = buffer[i];
+  }
 }
 
-void Chip8::loop() 
+void Chip8::cycle() 
 {
 
+  // TODO 
+  // DONDE PONER SDL PARA QUE SE CREE Y FUNCIONE PARA TODOS
+  // LOGRAR QUE EL ROM INGRESE CORRECTAMENTE A LA MEMORIA
+  // LEER EL ROM Y QUE IDENTIFIQUE INSTRUCCIONES
+  // LOGRAR VER EL LOGO DE IBM
+
+  load_rom("/ibm.ch8");
+  SDL_Window* display = nullptr;
+  SDL_Renderer* renderer =  nullptr;
+  SDL_Init(SDL_INIT_VIDEO);
+
+  SDL_CreateWindowAndRenderer(64*4, 32*4, 0, &display, &renderer);
+  SDL_RenderSetScale(renderer, 10, 10);
+ 
   u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
+  std::cout << memory[pc];
   pc += 2;
 
   u_int8_t x = (opcode >> 8) & 0x0F;
@@ -75,9 +103,11 @@ void Chip8::loop()
   {
     case(0x0000):
       if(opcode == 0x00E0){
-      // screen clear
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+        SDL_RenderClear(renderer);
       } else if(opcode == 0x00EE){
           stack[sp--] = pc;
+          std::cout << pc;
         }
     break;
     case(0x1000): // jump
@@ -86,6 +116,7 @@ void Chip8::loop()
     case(0x2000): 
       stack[sp++] = pc;
       pc = nnn;
+      std::cout << pc;
       break;
     case(0x6000): // set register vx
       V[x] = kk;
@@ -98,6 +129,12 @@ void Chip8::loop()
       break;
     case(0xD000): // display
       // draw
+      int cor_x = V[x & 63];
+      int cor_y = V[y & 31];
+      std::cout << cor_x << " " << cor_y << std::endl;
+      SDL_SetRenderDrawColor(renderer,255,255,255,255);
+      SDL_RenderDrawPoint(renderer, cor_x, cor_y);
+      SDL_RenderPresent(renderer);
       break;
     
   }

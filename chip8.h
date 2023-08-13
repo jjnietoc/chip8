@@ -2,7 +2,7 @@
 #define CHIP8_H_
 
 #include <array>
-#include <sys/_types/_u_int8_t.h>
+#include <SDL2/SDL.h>
 
 const int SIZE = 16;
 const int MEMSIZE = 4096;
@@ -26,7 +26,7 @@ class Chip8 {
     
     // Externals
     int keypad[16]; // keypad 
-    
+
   public:
     Chip8();  // constructor
     void load_font();
@@ -34,6 +34,7 @@ class Chip8 {
     void graphics();
 
     // dissassembler and decoder functions
+    // optional
     u_int16_t fetch_opcode();
     u_int8_t fetch_x();
     u_int8_t fetch_y();
@@ -41,8 +42,11 @@ class Chip8 {
     u_int16_t fetch_nnn();
     u_int8_t fetch_kk();
 
+    // load rom
+    void load_rom(std::string const& path);
+
     // main loop function
-    void loop();
+    void cycle();
 
     ~Chip8(); // destructor
 };
