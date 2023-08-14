@@ -1,16 +1,12 @@
-#include <cstdint>
-#include <cstring>
 #include <iostream>
 #include "chip8.h"
 #include <SDL2/SDL.h>
 #include <array>
 #include "display.h"
-#include <fstream>
-#include <vector>
 
 Chip8::Chip8(){
   I = 0;
-  pc = 0x200;
+  pc = 512;
   sp = 0;
   delay_timer = 0;
   sound_timer = 0;
@@ -51,72 +47,55 @@ void Chip8::graphics() {
     Chip8Display.RenderFrame();
    }
   }
- 
+
 void Chip8::init() 
 {
-  I = 0;
-  load_font();
-  // load_rom("ibm.ch8");
-  //graphics();
-  }
+  load_font();  
+}
 
 void Chip8::load_rom(std::string const& path)
 {
-  std::ifstream rom(path, std::ios::binary | std::ios::ate);
-  std::ifstream::pos_type rom_size = rom.tellg();
-  std::vector<std::uint8_t> buffer(rom_size);
-  rom.seekg(0, std::ios::beg);
-  rom.read(reinterpret_cast<char*>(buffer.data()), rom_size);
-  for(int i = 0; i < rom_size; i++) {
-    memory[i + 512] = buffer[i];
-  }
+  // TODO
+  // Find rom in location
+  // Read rom
+  // Create vector for storing in memory
+  // Copy date from rom to vector
+  // Copy date from vector to memory
 }
 
 void Chip8::cycle() 
 {
-
-  // TODO 
-  // DONDE PONER SDL PARA QUE SE CREE Y FUNCIONE PARA TODOS
-  // LOGRAR QUE EL ROM INGRESE CORRECTAMENTE A LA MEMORIA
-  // LEER EL ROM Y QUE IDENTIFIQUE INSTRUCCIONES
-  // LOGRAR VER EL LOGO DE IBM
-
-  load_rom("/ibm.ch8");
-  SDL_Window* display = nullptr;
-  SDL_Renderer* renderer =  nullptr;
-  SDL_Init(SDL_INIT_VIDEO);
-
-  SDL_CreateWindowAndRenderer(64*4, 32*4, 0, &display, &renderer);
-  SDL_RenderSetScale(renderer, 10, 10);
+//  load_rom("/ibm.ch8");
  
+  // read 2 bytes in big endian and add pc by 1
   u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
   std::cout << memory[pc];
   pc += 2;
 
+  // Fetch opcodes by type
   u_int8_t x = (opcode >> 8) & 0x0F;
   u_int8_t y = (opcode >> 4) & 0x0F;
   u_int8_t nibble = opcode & 0x0F;
   u_int16_t nnn = opcode & 0x0FFF;
   u_int8_t kk = opcode & 0x0FF;
 
+  // Opcodes
   switch(opcode & 0xF000)
   {
     case(0x0000):
-      if(opcode == 0x00E0){
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        SDL_RenderClear(renderer);
-      } else if(opcode == 0x00EE){
+      if(opcode == 0x00E0){ // clear screen
+        // TODO
+        // clear screen
+      } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
           stack[sp--] = pc;
-          std::cout << pc;
         }
     break;
     case(0x1000): // jump
       pc = nnn;
       break;
-    case(0x2000): 
+    case(0x2000): // call subroutine at mem location nnn
       stack[sp++] = pc;
       pc = nnn;
-      std::cout << pc;
       break;
     case(0x6000): // set register vx
       V[x] = kk;
@@ -131,15 +110,14 @@ void Chip8::cycle()
       // draw
       int cor_x = V[x & 63];
       int cor_y = V[y & 31];
-      std::cout << cor_x << " " << cor_y << std::endl;
-      SDL_SetRenderDrawColor(renderer,255,255,255,255);
-      SDL_RenderDrawPoint(renderer, cor_x, cor_y);
-      SDL_RenderPresent(renderer);
+      // TODO
+      // Draw in window using SDL
       break;
     
   }
 }
 
+// destructor
 Chip8::~Chip8() 
 {
 
