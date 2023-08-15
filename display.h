@@ -66,6 +66,11 @@ namespace sdl2 {
     inline void update() {
       SDL_RenderPresent(nRenderer);
     }
+
+    inline void draw(int r, int g, int b, int a, int x, int y) {
+      SDL_SetRenderDrawColor(nRenderer, r, g, b, a);
+      SDL_RenderDrawPoint(nRenderer, x, y);
+    }
     void render() 
     {
 
