@@ -8,7 +8,7 @@ int main() {
     // create new chip8 object
     Chip8 chip8; 
     chip8.init();   
-    chip8.load_rom("/Users/jjnieto/Desktop/cosas/cpp/chip8/ibm.ch8");
+    chip8.load_rom("/ibm.ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
