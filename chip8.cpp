@@ -4,6 +4,8 @@
 #include "display.h"
 #include <fstream>
 #include <iterator>
+#include <sys/_types/_u_int16_t.h>
+#include <sys/_types/_u_int8_t.h>
 #include <vector>
 
 Chip8::Chip8(){
@@ -73,7 +75,6 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
     case(0x0000):
       if(opcode == 0x00E0){ // clear screen
         r->clear_screen(0, 0, 0, 255);
-        r->render();
         r->update();
       } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
           stack[sp--] = pc;
@@ -81,10 +82,11 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
     break;
     case(0x1000): // jump
       pc = nnn;
-    case(0x2000): // call subroutine at mem location nnn
+    break;
+  /*  case(0x2000): // call subroutine at mem location nnn
       stack[sp++] = pc;
       pc = nnn;
-      break;
+      break; */
     case(0x6000): // set register vx
       V[x] = kk;
       break;
@@ -95,14 +97,29 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
       I = nnn;
       break;
     case(0xD000): // draw pixel at specified x, y location`
-      int cor_x = V[x & 63];
-      int cor_y = V[y & 31];
-      r->draw(255, 255, 255, 255, cor_x, cor_y);
-      r->render();
-      r->update();
-      
-      break;
-    
+      V[15] = 0;
+      int x_cor = V[x & 63];
+      int y_cor = V[y & 31];
+
+      for(int i = 0; i < nibble; i++)
+      {
+        u_int8_t sprite = memory[I + i];
+        x_cor = V[x & 63];
+          for(int j = 0; j < 8; j++)
+          {
+            int is_set = (sprite >> (8 - j - 1)) & 1;
+            if(!is_set) 
+            {
+              r->draw(255, 255, 255, 255, x_cor, y_cor);
+              r->update();
+            }
+          if(x_cor == 64 - 1) break;
+          x_cor += 1;
+        }
+        y_cor += 1;
+        if(y_cor == 32 - 1) break;
+      }
+  //    break;
   }
 }
 
