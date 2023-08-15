@@ -36,9 +36,7 @@ Chip8::Chip8(){
 void Chip8::load_font()
 {
   for (int i = 0; i < 80; i++)
-  {
     memory[i] = font[i];
-  }
 }
 
 void Chip8::init() 
@@ -54,7 +52,7 @@ void Chip8::load_rom(std::string const& path)
     buffer[i] = memory[i + 512];
 }
 
-void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r) 
+void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r) 
 {
 //  load_rom("/ibm.ch8");
  
@@ -74,9 +72,9 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
   {
     case(0x0000):
       if(opcode == 0x00E0){ // clear screen
-        r.clear_screen(0, 0, 0, 255);
-        r.render();
-        r.update();
+        r->clear_screen(0, 0, 0, 255);
+        r->render();
+        r->update();
       } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
           stack[sp--] = pc;
         }
@@ -99,9 +97,9 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
     case(0xD000): // draw pixel at specified x, y location`
       int cor_x = V[x & 63];
       int cor_y = V[y & 31];
-      r.draw(255, 255, 255, 255, cor_x, cor_y);
-      r.render();
-      r.update();
+      r->draw(255, 255, 255, 255, cor_x, cor_y);
+      r->render();
+      r->update();
       
       break;
     

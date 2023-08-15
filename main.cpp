@@ -18,12 +18,15 @@ int main() {
     sdl2::Events events;
     
     // main loop
-    while(events.handle_events())
-    {
-      for(int i = 0; i < 10; i++)
+    bool quit = false;
+    while(!quit) {
+      while(events.handle_events())
       {
-        chip8.cycle(window, events, renderer);
-        app.delay(); 
+      for(int i = 0; i < 10; i++)
+        {
+        chip8.cycle(&window, &events, &renderer);
+//        app.delay(); 
+        }
       }
     }
   }
