@@ -8,7 +8,7 @@ int main() {
     // create new chip8 object
     Chip8 chip8; 
     chip8.init();   
-    chip8.load_rom("/ibm.ch8");
+    chip8.load_rom("ibm.ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
@@ -18,14 +18,12 @@ int main() {
     sdl2::Events events;
     
     // main loop
-    bool quit = false;
-    while(!quit) {
-      while(events.handle_events())
+    while(events.handle_events())
+    {
+      for(int i = 0; i < 10; i++)
       {
-      for(int i = 0; i < 10; i++){
         chip8.cycle(window, events, renderer);
         app.delay(); 
-        }
       }
     }
   }
