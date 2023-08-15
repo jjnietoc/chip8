@@ -39,15 +39,6 @@ void Chip8::load_font()
   }
 }
 
-void Chip8::graphics() {
-  Window Chip8Display;
-  SDL_Event event;
-  while(true) {
-    SDL_PollEvent(&event);
-    Chip8Display.RenderFrame();
-   }
-  }
-
 void Chip8::init() 
 {
   load_font();  
@@ -63,7 +54,7 @@ void Chip8::load_rom(std::string const& path)
   // Copy date from vector to memory
 }
 
-void Chip8::cycle() 
+void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r) 
 {
 //  load_rom("/ibm.ch8");
  
@@ -85,7 +76,9 @@ void Chip8::cycle()
     case(0x0000):
       if(opcode == 0x00E0){ // clear screen
         // TODO
-        // clear screen
+        r.clear_screen(0, 0, 0, 255);
+        r.render();
+        r.update();
       } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
           stack[sp--] = pc;
         }
@@ -112,6 +105,8 @@ void Chip8::cycle()
       int cor_y = V[y & 31];
       // TODO
       // Draw in window using SDL
+      r.draw(0, 0, 0, 255, cor_x, cor_y);
+      
       break;
     
   }
