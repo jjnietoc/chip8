@@ -6,6 +6,7 @@
 
 namespace sdl2 {
 
+ 
   class Window {
   public: 
     Window(int x, int y, int w, int h, bool full_screen = false) 
@@ -31,6 +32,12 @@ namespace sdl2 {
         throw std::runtime_error("Unable to initialize SDL");
       }
     }
+     
+  void delay() 
+  {
+    SDL_Delay(10000);
+  }
+
     ~Application() {
       SDL_Quit();
     }
@@ -75,6 +82,7 @@ namespace sdl2 {
     {
 
     }
+
     ~Renderer(){
       SDL_DestroyRenderer(nRenderer);
     }

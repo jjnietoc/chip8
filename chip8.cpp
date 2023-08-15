@@ -1,8 +1,10 @@
 #include <iostream>
 #include "chip8.h"
 #include <SDL2/SDL.h>
-#include <array>
 #include "display.h"
+#include <fstream>
+#include <iterator>
+#include <vector>
 
 Chip8::Chip8(){
   I = 0;
@@ -46,12 +48,10 @@ void Chip8::init()
 
 void Chip8::load_rom(std::string const& path)
 {
-  // TODO
-  // Find rom in location
-  // Read rom
-  // Create vector for storing in memory
-  // Copy date from rom to vector
-  // Copy date from vector to memory
+  std::ifstream rom(path, std::ios::binary);
+  std::vector<unsigned char>buffer(std::istreambuf_iterator<char>(rom), {});
+  for(int i = 0; i < sizeof(buffer); i++)
+    buffer[i] = memory[i + 512];
 }
 
 void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r) 
@@ -60,7 +60,6 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
  
   // read 2 bytes in big endian and add pc by 1
   u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
-  std::cout << memory[pc];
   pc += 2;
 
   // Fetch opcodes by type
@@ -75,7 +74,6 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
   {
     case(0x0000):
       if(opcode == 0x00E0){ // clear screen
-        // TODO
         r.clear_screen(0, 0, 0, 255);
         r.render();
         r.update();
@@ -85,7 +83,6 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
     break;
     case(0x1000): // jump
       pc = nnn;
-      break;
     case(0x2000): // call subroutine at mem location nnn
       stack[sp++] = pc;
       pc = nnn;
@@ -99,13 +96,12 @@ void Chip8::cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r)
     case(0xA000): // set index to register I
       I = nnn;
       break;
-    case(0xD000): // display
-      // draw
+    case(0xD000): // draw pixel at specified x, y location`
       int cor_x = V[x & 63];
       int cor_y = V[y & 31];
-      // TODO
-      // Draw in window using SDL
-      r.draw(0, 0, 0, 255, cor_x, cor_y);
+      r.draw(255, 255, 255, 255, cor_x, cor_y);
+      r.render();
+      r.update();
       
       break;
     
