@@ -1,6 +1,7 @@
 #ifndef CHIP8_H_
 #define CHIP8_H_
 
+#include "display.h"
 #include <array>
 #include <SDL2/SDL.h>
 
@@ -31,7 +32,6 @@ class Chip8 {
     Chip8();  // constructor
     void load_font();
     void init();
-    void graphics();
 
     // dissassembler and decoder functions
     // optional
@@ -46,7 +46,7 @@ class Chip8 {
     void load_rom(std::string const& path);
 
     // main loop function
-    void cycle();
+    void cycle(sdl2::Window w, sdl2::Events e, sdl2::Renderer r);
 
     ~Chip8(); // destructor
 };
