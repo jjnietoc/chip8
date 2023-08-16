@@ -11,7 +11,7 @@ namespace sdl2 {
   public: 
     Window(int x, int y, int w, int h, bool full_screen = false) 
     {
-      nWindow = SDL_CreateWindow("", x, y, w , h, full_screen);
+      nWindow = SDL_CreateWindow("chip-8", x, y, w , h, full_screen);
       if(nWindow == nullptr)
         throw std::runtime_error("Unable to create window\n");  
     }
@@ -74,8 +74,8 @@ namespace sdl2 {
       SDL_RenderPresent(nRenderer);
     }
 
-    inline void draw(int r, int g, int b, int a, int x, int y) {
-      SDL_SetRenderDrawColor(nRenderer, r, g, b, a);
+    inline void draw(int x, int y) {
+      SDL_SetRenderDrawColor(nRenderer, 255, 255, 255, 255);
       SDL_RenderDrawPoint(nRenderer, x, y);
     }
     void render() 

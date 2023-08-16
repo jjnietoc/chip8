@@ -65,7 +65,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
   // Fetch opcodes by type
   u_int8_t x = (opcode >> 8) & 0x0F;
   u_int8_t y = (opcode >> 4) & 0x0F;
-  u_int8_t nibble = opcode & 0x0F;
+  u_int8_t n = opcode & 0x0F;
   u_int16_t nnn = opcode & 0x0FFF;
   u_int8_t kk = opcode & 0x0FF;
 
@@ -83,10 +83,10 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
     case(0x1000): // jump
       pc = nnn;
     break;
-  /*  case(0x2000): // call subroutine at mem location nnn
+    case(0x2000): // call subroutine at mem location nnn
       stack[sp++] = pc;
       pc = nnn;
-      break; */
+      break; 
     case(0x6000): // set register vx
       V[x] = kk;
       break;
@@ -101,7 +101,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
       int x_cor = V[x & 63];
       int y_cor = V[y & 31];
 
-      for(int i = 0; i < nibble; i++)
+      for(int i = 0; i < n; i++)
       {
         u_int8_t sprite = memory[I + i];
         x_cor = V[x & 63];
@@ -110,7 +110,8 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
             int is_set = (sprite >> (8 - j - 1)) & 1;
             if(!is_set) 
             {
-              r->draw(255, 255, 255, 255, x_cor, y_cor);
+              r->draw(x_cor, y_cor);
+              
               r->update();
             }
           if(x_cor == 64 - 1) break;
