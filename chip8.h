@@ -42,6 +42,9 @@ class Chip8 {
     u_int16_t fetch_nnn();
     u_int8_t fetch_kk();
 
+    bool draw_flag;
+    uint8_t display[64 * 32];
+
     // load rom
     void load_rom(std::string const& path);
 

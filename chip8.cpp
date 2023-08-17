@@ -41,6 +41,22 @@ void Chip8::load_font()
 
 void Chip8::init() 
 {
+  for(int i = 0; i < 16; i++)
+  {
+    stack[i] = 0;
+    V[i] = 0;
+  }
+
+  pc = 0x200;
+  sp = 0;
+  I = 0;
+  
+  for(int i = 0; i < 2048; i++)
+    display[i] = 0;
+
+  for(int i = 0; i < 4096; i++)
+    memory[i] = 0;
+
   load_font();  
 }
 

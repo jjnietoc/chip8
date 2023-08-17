@@ -23,11 +23,11 @@ int main() {
     while(!quit) {
       while(events.handle_events())
       {
-      for(int i = 0; i < 10; i++)
-        {
+   //   for(int i = 0; i < 10; i++)
+     //   {
         chip8.cycle(&window, &events, &renderer, &texture);
 //        app.delay(); 
-        }
+       // }
       }
     }
   }
