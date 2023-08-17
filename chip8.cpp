@@ -4,8 +4,6 @@
 #include "display.h"
 #include <fstream>
 #include <iterator>
-#include <sys/_types/_u_int16_t.h>
-#include <sys/_types/_u_int8_t.h>
 #include <vector>
 
 Chip8::Chip8(){
@@ -54,7 +52,7 @@ void Chip8::load_rom(std::string const& path)
     buffer[i] = memory[i + 512];
 }
 
-void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r) 
+void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t) 
 {
 //  load_rom("/ibm.ch8");
  
@@ -98,29 +96,24 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r)
       break;
     case(0xD000): // draw pixel at specified x, y location`
       V[15] = 0;
-      int x_cor = V[x & 63];
-      int y_cor = V[y & 31];
-
-      for(int i = 0; i < n; i++)
-      {
-        u_int8_t sprite = memory[I + i];
-        x_cor = V[x & 63];
-          for(int j = 0; j < 8; j++)
-          {
-            int is_set = (sprite >> (8 - j - 1)) & 1;
-            if(!is_set) 
-            {
-              r->draw(x_cor, y_cor);
-              
-              r->update();
+      uint32_t pixels[64 * 32];
+      for(int y = 0; y < n; y++) {
+        for(int x = 0; x < 8; x++) {
+          u_int8_t pixel = memory[I + y];
+          if(pixel & (0x80 >> x)) {
+            int index = 
+              (V[x] + x) % 64 +
+              ((V[y] + y) % 32) * 64;
+            if(pixels[index] == 0xFFFFFFFF) {
+              V[15] = 1;
+              pixels[index] = 0xFF000000;
+            } else {
+              pixels[index] = 0xFFFFFFFF;
             }
-          if(x_cor == 64 - 1) break;
-          x_cor += 1;
+            r->draw(w->get_window(), t->get_texture(), pixels);
+          }
         }
-        y_cor += 1;
-        if(y_cor == 32 - 1) break;
       }
-  //    break;
   }
 }
 

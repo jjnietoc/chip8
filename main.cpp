@@ -14,6 +14,7 @@ int main() {
     sdl2::Application app;
     sdl2::Window window(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 64*10, 32*10);
     sdl2::Renderer renderer(window.get_window());
+    sdl2::Texture texture(renderer.get_renderer());
     SDL_RenderSetScale(renderer.get_renderer(), 10, 10);
     sdl2::Events events;
     
@@ -24,7 +25,7 @@ int main() {
       {
       for(int i = 0; i < 10; i++)
         {
-        chip8.cycle(&window, &events, &renderer);
+        chip8.cycle(&window, &events, &renderer, &texture);
 //        app.delay(); 
         }
       }

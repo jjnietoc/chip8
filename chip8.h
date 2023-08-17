@@ -46,7 +46,7 @@ class Chip8 {
     void load_rom(std::string const& path);
 
     // main loop function
-    void cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r);
+    void cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t);
 
     ~Chip8(); // destructor
 };

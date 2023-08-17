@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <stdexcept>
+#include <sys/_types/_u_int32_t.h>
 
 namespace sdl2 {
 
@@ -11,7 +12,7 @@ namespace sdl2 {
   public: 
     Window(int x, int y, int w, int h, bool full_screen = false) 
     {
-      nWindow = SDL_CreateWindow("chip-8", x, y, w , h, full_screen);
+      nWindow = SDL_CreateWindow("Chip8", x, y, w , h, full_screen);
       if(nWindow == nullptr)
         throw std::runtime_error("Unable to create window\n");  
     }
@@ -74,13 +75,10 @@ namespace sdl2 {
       SDL_RenderPresent(nRenderer);
     }
 
-    inline void draw(int x, int y) {
-      SDL_SetRenderDrawColor(nRenderer, 255, 255, 255, 255);
-      SDL_RenderDrawPoint(nRenderer, x, y);
-    }
-    void render() 
-    {
-
+    inline void draw(SDL_Window* nWindow, SDL_Texture* nTexture, uint32_t pixels[64*32]) {
+      SDL_UpdateTexture(nTexture, NULL, pixels, 64*sizeof(u_int32_t));
+      SDL_RenderCopy(nRenderer, nTexture, NULL, NULL);
+      SDL_RenderPresent(nRenderer);
     }
 
     ~Renderer(){
@@ -88,6 +86,22 @@ namespace sdl2 {
     }
   private:
     SDL_Renderer *nRenderer;
+  };
+
+  class Texture {
+  public:
+    Texture(SDL_Renderer* nRenderer){
+    nTexture = SDL_CreateTexture(nRenderer, SDL_PIXELFORMAT_RGB444,
+                                 SDL_TEXTUREACCESS_STATIC, 64, 32);
+    }
+    inline SDL_Texture* get_texture() {
+      return nTexture;
+  }
+    ~Texture(){
+
+    }
+  private:
+    SDL_Texture *nTexture;
   };
 }
 
