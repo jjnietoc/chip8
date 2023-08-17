@@ -97,13 +97,13 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
     case(0xD000): // draw pixel at specified x, y location`
       V[15] = 0;
       uint32_t pixels[64 * 32];
-      for(int y = 0; y < n; y++) {
-        for(int x = 0; x < 8; x++) {
-          u_int8_t pixel = memory[I + y];
-          if(pixel & (0x80 >> x)) {
+      for(int i = 0; i < n; i++) {
+        for(int j = 0; j < 8; j++) {
+          u_int8_t pixel = (memory[I + i] & (0x80 >> j)) != 0;
+          if(pixel) {
             int index = 
-              (V[x] + x) % 64 +
-              ((V[y] + y) % 32) * 64;
+              (V[x] + j) % 64 +
+              ((V[y] + i) % 32) * 64;
             if(pixels[index] == 0xFFFFFFFF) {
               V[15] = 1;
               pixels[index] = 0xFF000000;
