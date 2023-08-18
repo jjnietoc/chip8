@@ -10,16 +10,11 @@ namespace sdl2 {
  
   class Window {
   public: 
-    Window(int x, int y, int w, int h, bool full_screen = false) 
-    {
-      nWindow = SDL_CreateWindow("Chip8", x, y, w , h, full_screen);
-      if(nWindow == nullptr)
-        throw std::runtime_error("Unable to create window\n");  
-    }
+    Window(int x, int y, int w, int h, bool full_screen = false);
     inline SDL_Window* get_window() {
       return nWindow;  
     }
-    ~Window() {SDL_DestroyWindow(nWindow);}
+    ~Window();
 
   private:
     SDL_Window *nWindow;
@@ -27,43 +22,23 @@ namespace sdl2 {
 
   class Application {
   public: 
-    Application() {
-      if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
-      {
-        throw std::runtime_error("Unable to initialize SDL");
-      }
-    }
+    Application();
      
-  void delay() 
-  {
-    SDL_Delay(10000);
-  }
+  void delay(); 
 
-    ~Application() {
-      SDL_Quit();
-    }
+    ~Application(); 
   };
 
   class Events { 
   public:
-    bool handle_events()
-    {
-      while(SDL_PollEvent(&event))
-      {
-        if(event.type == SDL_QUIT)
-          return false;
-      }
-      return true;
-    }
+    bool handle_events();
   private:
     SDL_Event event;
   };
 
   class Renderer {
   public: 
-    Renderer(SDL_Window* nWindow){
-      nRenderer = SDL_CreateRenderer(nWindow, -1, 0);
-    }
+    Renderer(SDL_Window* nWindow);
     inline SDL_Renderer* get_renderer() {
       return nRenderer;
     }
@@ -81,19 +56,15 @@ namespace sdl2 {
       SDL_RenderPresent(nRenderer);
     }
 
-    ~Renderer(){
-      SDL_DestroyRenderer(nRenderer);
-    }
+    ~Renderer();
+
   private:
     SDL_Renderer *nRenderer;
   };
 
   class Texture {
   public:
-    Texture(SDL_Renderer* nRenderer){
-    nTexture = SDL_CreateTexture(nRenderer, SDL_PIXELFORMAT_ARGB8888,
-                                 SDL_TEXTUREACCESS_STREAMING, 64, 32);
-    }
+    Texture(SDL_Renderer* nRenderer);
     inline SDL_Texture* get_texture() {
       return nTexture;
   }
