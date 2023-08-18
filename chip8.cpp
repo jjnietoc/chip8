@@ -41,6 +41,7 @@ void Chip8::load_font()
 
 void Chip8::init() 
 {
+  // resetting values
   for(int i = 0; i < 16; i++)
   {
     stack[i] = 0;
@@ -50,12 +51,15 @@ void Chip8::init()
   pc = 0x200;
   sp = 0;
   I = 0;
-  
-  for(int i = 0; i < 2048; i++)
-    display[i] = 0;
 
-  for(int i = 0; i < 4096; i++)
-    memory[i] = 0;
+  // clearing display
+  for(int i = 0; i < 2048; i++)
+  {
+    display[i] = 0;
+  }
+
+ /* CLEARING MEMORY BREAKS CHIP8 */
+
 
   load_font();  
 }
@@ -88,8 +92,13 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
   {
     case(0x0000):
       if(opcode == 0x00E0){ // clear screen
-        r->clear_screen(0, 0, 0, 255);
-        r->update();
+        for(int i = 0; i < 2048; i++)
+        {
+          display[i] = 0;
+        }
+        draw_flag = true;
+      break;
+
       } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
           stack[sp--] = pc;
         }

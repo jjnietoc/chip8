@@ -91,8 +91,8 @@ namespace sdl2 {
   class Texture {
   public:
     Texture(SDL_Renderer* nRenderer){
-    nTexture = SDL_CreateTexture(nRenderer, SDL_PIXELFORMAT_RGB444,
-                                 SDL_TEXTUREACCESS_STATIC, 64, 32);
+    nTexture = SDL_CreateTexture(nRenderer, SDL_PIXELFORMAT_ARGB8888,
+                                 SDL_TEXTUREACCESS_STREAMING, 64, 32);
     }
     inline SDL_Texture* get_texture() {
       return nTexture;
