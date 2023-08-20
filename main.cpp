@@ -19,18 +19,22 @@ int main() {
     sdl2::Events events;
     
     // main loop
-    bool quit = false;
-    while(!quit) {
-      while(events.handle_events())
-      {
-      for(int i = 0; i < 10; i++)
-        {
-        chip8.cycle(&window, &events, &renderer, &texture);
-//        app.delay(); 
+    bool running = true;
+    Uint32 start;
+    while(running) {
+      start = SDL_GetTicks();
+      SDL_Event event;
+      while(SDL_PollEvent(&event)) {
+        switch(event.type) {
+          case SDL_QUIT:
+            running = false;
+          break;
         }
+        chip8.cycle(&window, &events, &renderer, &texture);
       }
     }
   }
+
   catch(std::exception const &e) {
     std::cerr << e.what() << "\n";
   }
