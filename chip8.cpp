@@ -99,7 +99,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
       break;
 
       } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
-          stack[sp--] = pc;
+          pc = stack[--sp];
         }
     break;
     case(0x1000): // jump
@@ -121,7 +121,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
     case(0xD000): // draw pixel at specified x, y location`
       std::cout << "Draw" << std::endl;
       V[15] = 0;
-      uint32_t pixels[64 * 32] = {};
+
       for(int i = 0; i < n; i++) {
         for(int j = 0; j < 8; j++) {
           u_int8_t pixel = (memory[I + i] & (0x80 >> j)) != 0;
