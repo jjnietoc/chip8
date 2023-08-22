@@ -3,12 +3,18 @@
 WIP
 
 ### Latest update:
-* Emulator now creates a window and draws a pixel, instructions need to be fixed so it displays IBM logo.
+* Emulator shows IBM logo once and not in a clean way. 
 
 ### TODO: 
+- [ ] Make IBM logo show for a while, pass other tests
+- [ ] Refactor and clean code
+- [ ] Finish instructions
+
+
+#### done:
 - [x] Find best place to put SDL
 - [x] Copy ROM to internal memory
 - [x] Read ROM correctly 
 - [x] Get loop to read and do instructions
-- [ ] Goal: successfully show IBM logo
+- [x] Goal: successfully show IBM logo
  
