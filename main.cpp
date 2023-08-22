@@ -30,7 +30,8 @@ int main() {
             running = false;
           break;
         }
-        chip8.cycle(&window, &events, &renderer, &texture);
+        for (int i = 0; i < 10; i++)
+         chip8.cycle(&window, &events, &renderer, &texture);
       }
     }
   }

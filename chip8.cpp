@@ -66,10 +66,9 @@ void Chip8::init()
 
 void Chip8::load_rom(std::string const& path)
 {
-  std::ifstream rom(path, std::ios::binary);
-  std::vector<unsigned char>buffer(std::istreambuf_iterator<char>(rom), {});
-  for(int i = 0; i < sizeof(buffer); i++)
-    buffer[i] = memory[i + 512];
+  std::ifstream rom(path, std::ios::in | std::ios::binary);
+  std::vector<uint8_t>buffer((std::istreambuf_iterator<char>(rom)), std::istreambuf_iterator<char>());
+  std::copy(buffer.begin(), buffer.end(), memory.begin() + 512);
 }
 
 void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t) 
@@ -120,8 +119,9 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
       I = nnn;
       break;
     case(0xD000): // draw pixel at specified x, y location`
+      std::cout << "Draw" << std::endl;
       V[15] = 0;
-      uint32_t pixels[64 * 32];
+      uint32_t pixels[64 * 32] = {};
       for(int i = 0; i < n; i++) {
         for(int j = 0; j < 8; j++) {
           u_int8_t pixel = (memory[I + i] & (0x80 >> j)) != 0;

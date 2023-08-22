@@ -12,7 +12,7 @@ const int FONTSIZE = 80;
 class Chip8 {
   private:
     // Memory
-    u_int8_t memory[MEMSIZE];
+  std::array<u_int8_t, MEMSIZE> memory;
     // Registers
     u_int8_t V[SIZE];
     // Stack
