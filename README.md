@@ -1,14 +1,15 @@
-## (Another) Chip8 Emulator
+## (Yet another) Chip8 Emulator
 
 WIP
 
 ### Latest update:
-* Emulator shows IBM logo once and not in a clean way. 
+* Emulator passes display and register tests. 
 
-### TODO: 
-- [ ] Make IBM logo show for a while, pass other tests
-- [ ] Refactor and clean code
+### CURRENT: 
+
 - [ ] Finish instructions
+- [ ] Implement keyboard
+- [ ] Implement sound_timer & sdl_sound
 
 
 #### done:
@@ -17,4 +18,5 @@ WIP
 - [x] Read ROM correctly 
 - [x] Get loop to read and do instructions
 - [x] Goal: successfully show IBM logo
- 
+- [x] Make IBM logo show for a while, pass other tests
+- [x] Refactor and clean code
