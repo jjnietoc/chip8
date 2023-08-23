@@ -2,14 +2,20 @@
 
 using namespace sdl2;
  
-  
-  Window::Window(int x, int y, int w, int h, bool full_screen) 
+  //  sdl2::Window window(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 64*10, 32*10);
+
+  Window::Window() 
     {
-      nWindow = SDL_CreateWindow("Chip8", x, y, w , h, full_screen = false);
-      if(nWindow == nullptr)
+      window = SDL_CreateWindow("chip-8",
+                                 SDL_WINDOWPOS_CENTERED,
+                                 SDL_WINDOWPOS_CENTERED, 
+                                 64 * 10, 
+                                 32 * 10, 
+                                 SDL_WINDOW_SHOWN);
+      if(window == nullptr)
         throw std::runtime_error("Unable to create window\n");  
     }
-  Window::~Window() {SDL_DestroyWindow(nWindow);}
+  Window::~Window() {SDL_DestroyWindow(window);}
 
 
   Application::Application() {
@@ -19,34 +25,22 @@ using namespace sdl2;
       }
     }
      
-  void delay() 
-  {
-    SDL_Delay(10000);
-  }
-
   Application::~Application() {
       SDL_Quit();
     }
 
-    bool Events::handle_events()
-    {
-      while(SDL_PollEvent(&event))
-      {
-        if(event.type == SDL_QUIT)
-          return false;
-      }
-      return true;
-    }
-
-  Renderer::Renderer(SDL_Window* nWindow){
-      nRenderer = SDL_CreateRenderer(nWindow, -1, 0);
-    }
+  Renderer::Renderer(SDL_Window* window){
+      renderer = SDL_CreateRenderer(window,
+                                     -1,                                  
+                                     SDL_RENDERER_ACCELERATED); 
+}
 
   Renderer::~Renderer(){
-      SDL_DestroyRenderer(nRenderer);
+      SDL_DestroyRenderer(renderer);
     }
 
-  Texture::Texture(SDL_Renderer* nRenderer){
-    nTexture = SDL_CreateTexture(nRenderer, SDL_PIXELFORMAT_ARGB8888,
+  Texture::Texture(SDL_Renderer* renderer){
+    texture = SDL_CreateTexture(renderer,
+                                 SDL_PIXELFORMAT_ARGB8888,
                                  SDL_TEXTUREACCESS_STREAMING, 64, 32);
     }

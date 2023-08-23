@@ -8,15 +8,14 @@ int main() {
     // create new chip8 object
     Chip8 chip8; 
     chip8.init();   
-    chip8.load_rom("Zero Demo [zeroZshadow, 2007].ch8");
+    chip8.load_rom("ibm.ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
-    sdl2::Window window(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 64*10, 32*10);
+    sdl2::Window window;
     sdl2::Renderer renderer(window.get_window());
     sdl2::Texture texture(renderer.get_renderer());
     SDL_RenderSetScale(renderer.get_renderer(), 10, 10);
-    sdl2::Events events;
     
     // main loop
     bool running = true;
@@ -29,7 +28,7 @@ int main() {
           break;
         }
       }
-      chip8.cycle(&window, &events, &renderer, &texture);
+      chip8.cycle(&window, &renderer, &texture);
     }
   }
 

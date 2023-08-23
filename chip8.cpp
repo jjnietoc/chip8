@@ -1,13 +1,11 @@
-#include <_types/_uint16_t.h>
-#include <_types/_uint8_t.h>
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <vector>
 #include <cstdlib>
+#include <SDL2/SDL.h>
 
 #include "chip8.h"
-#include <SDL2/SDL.h>
 #include "display.h"
 
 
@@ -74,7 +72,7 @@ void Chip8::load_rom(std::string const& path)
   std::copy(buffer.begin(), buffer.end(), memory.begin() + 512);
 }
 
-void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t) 
+void Chip8::cycle(sdl2::Window *w, sdl2::Renderer *r, sdl2::Texture *t) 
 {
   // read 2 bytes in big endian and add pc by 1
   u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
@@ -135,7 +133,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
           break;
         case(0x0001):
          V[x] = V[x] | V[y];
-        break;
+         break;
         case(0x0002):
           V[x] = V[x] & V[y];
           break;
@@ -150,7 +148,6 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
           } else {
             V[0xF] = 0;
           }
-
           V[x] += V[y];
           break;
         case(0x0005):
@@ -158,7 +155,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
             V[0xF] = 1;
           } else {
             V[0xF] = 0;
-          };
+          }
           V[x] = V[x] - V[y];
           break;
         case(0x0006):
@@ -178,14 +175,17 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
           V[x] <<= 1;
           break;
       }
+    break;
     case(0x9000):
       if(V[x] != V[y])
+        pc += 2;
         break;
     case(0xA000): // set index to register I
       I = nnn;
       break;
     case(0xB000):
       pc = nnn + V[0];
+      break;
     case(0xC000):
       V[x] = (rand() % (0xFF + 1)) & kk;
       break;
@@ -218,8 +218,10 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
       switch(opcode & 0x00FF) {
         case(0x0007):
           V[x] = delay_timer;
+          break;
         case(0x0015):
           delay_timer = V[x];
+          break;
         case(0x001E):
           V[I] = V[I] + V[x];
           break;
@@ -240,8 +242,8 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
             V[i] = memory[I + i];
           I = I + V[x] + 1;
           break;
-
       }
+    break;
   }
   if(delay_timer > 0)
     --delay_timer;
