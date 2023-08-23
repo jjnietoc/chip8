@@ -1,11 +1,10 @@
 #ifndef CHIP8_H_
 #define CHIP8_H_
 
-#include "display.h"
-#include <_types/_uint32_t.h>
-#include <_types/_uint8_t.h>
 #include <array>
 #include <SDL2/SDL.h>
+
+#include "display.h"
 
 const int SIZE = 16;
 const int MEMSIZE = 4096;
@@ -15,32 +14,35 @@ class Chip8 {
   private:
     // Memory
     std::array<u_int8_t, MEMSIZE> memory;
+
     // Registers
     u_int8_t V[SIZE];
+
     // Stack
     u_int16_t stack[SIZE];
+
     // Font space in memory
     std::array<u_int8_t, FONTSIZE> font;
+  
+    // register I, program counter
+    u_int16_t I, pc;     
+    // delay timer, sound timer, stack pointer
+    u_int8_t delay_timer, sound_timer, sp;     
     
 
-    // Parts
-    u_int16_t I, pc; // register I, program counter
-    u_int8_t delay_timer, sound_timer, sp; // delay timer, sound timer, stack pointer
-    uint8_t display[64 * 32];
-    uint32_t pixels[64 * 32] = {};
-    bool draw_flag;
-
     // Externals
-    int keypad[16]; // keypad 
+    int keypad[SIZE]; // keypad 
+    uint8_t display[WIDTH * HEIGHT];
+    uint32_t pixels[WIDTH * HEIGHT] = {};
+
 
   public:
     Chip8();  // constructor
     ~Chip8(); // destructor
 
     void load_font();
-    void init();
     void load_rom(std::string const& path);
-    void cycle(sdl2::Window *w, sdl2::Renderer *r, sdl2::Texture *t);
+    void cycle(sdl2::Renderer *r, sdl2::Texture *t);
 
     // dissassembler and decoder functions
     // optional
