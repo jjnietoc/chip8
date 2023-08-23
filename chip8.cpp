@@ -199,6 +199,19 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
     case(0xC000):
       V[x] = (std::rand() % (0xFF)) & kk;   // set Vx to random byte AND kk
       break;
+
+    case(0xE000):
+      switch(opcode & 0x00FF) {
+        case(0x009E):   // skip if key[Vx] IS pressed
+          if(keypad[V[x]] == 1)
+            pc += 2;
+          break;
+        case(0x00A1):   // skip if key[Vx] is NOT pressed
+          if(keypad[V[x]] == 0)
+            pc += 2;
+          break;
+      }
+
     case(0xD000): // draw pixel at specified x, y location
       V[15] = 0;
 
