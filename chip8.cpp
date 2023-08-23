@@ -1,10 +1,15 @@
+#include <_types/_uint16_t.h>
+#include <_types/_uint8_t.h>
 #include <iostream>
-#include "chip8.h"
-#include <SDL2/SDL.h>
-#include "display.h"
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <cstdlib>
+
+#include "chip8.h"
+#include <SDL2/SDL.h>
+#include "display.h"
+
 
 Chip8::Chip8(){
   I = 0;
@@ -32,7 +37,6 @@ Chip8::Chip8(){
   };
 }
 
-
 void Chip8::load_font()
 {
   for (int i = 0; i < 80; i++)
@@ -51,16 +55,15 @@ void Chip8::init()
   pc = 0x200;
   sp = 0;
   I = 0;
+  delay_timer = 0;
 
   // clearing display
   for(int i = 0; i < 2048; i++)
   {
     display[i] = 0;
   }
-
- /* CLEARING MEMORY BREAKS CHIP8 */
-
-
+  
+  // load font into memory
   load_font();  
 }
 
@@ -73,8 +76,6 @@ void Chip8::load_rom(std::string const& path)
 
 void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t) 
 {
-//  load_rom("/ibm.ch8");
- 
   // read 2 bytes in big endian and add pc by 1
   u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
   pc += 2;
@@ -90,7 +91,7 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
   switch(opcode & 0xF000)
   {
     case(0x0000):
-      if(opcode == 0x00E0){ // clear screen
+      if(opcode == 0x00E0) { // clear screen
         for(int i = 0; i < 2048; i++)
         {
           display[i] = 0;
@@ -98,13 +99,25 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
         draw_flag = true;
       break;
 
-      } else if(opcode == 0x00EE){  // pop last address from stack and set it to pc
+      } else if(opcode == 0x00EE){  // return from subroutine
           pc = stack[--sp];
         }
-    break;
+      break;
     case(0x1000): // jump
       pc = nnn;
-    break;
+      break;
+    case(0x3000): // skip if V[x] == kk
+      if(V[x] == kk) 
+        pc += 2;
+      break;
+    case(0x4000):
+      if(V[x] != kk) // skip if V[x] != kk
+        pc += 2;
+      break;
+    case(0x5000):
+      if(V[x] == V[y]) // skip if V[x] == V[y]
+        pc += 2;
+        break;
     case(0x2000): // call subroutine at mem location nnn
       stack[sp++] = pc;
       pc = nnn;
@@ -115,11 +128,68 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
     case(0x7000): // add value to register vx
       V[x] += kk;
       break;
+    case(0x8000):
+      switch(opcode & 0x000F) {
+        case(0x0000):
+          V[x] = V[y]; 
+          break;
+        case(0x0001):
+         V[x] = V[x] | V[y];
+        break;
+        case(0x0002):
+          V[x] = V[x] & V[y];
+          break;
+        case(0x0003):
+          V[x] = V[x] ^ V[y];
+          break;
+        case(0x0004):
+          uint16_t result;
+          result = V[x] + V[y];
+          if(result > 255) {
+            V[0xF] = 1;
+          } else {
+            V[0xF] = 0;
+          }
+
+          V[x] += V[y];
+          break;
+        case(0x0005):
+          if(V[x] > V[y]) {
+            V[0xF] = 1;
+          } else {
+            V[0xF] = 0;
+          };
+          V[x] = V[x] - V[y];
+          break;
+        case(0x0006):
+          V[0xF] = V[x] & 0x1;
+          V[x] >>= 1;
+          break;
+        case(0x0007):
+          if(V[x] > V[y]) {
+            V[0xF] = 0;
+          } else {
+            V[0xF] = 1;
+          }
+          V[x] = V[y] - V[x];
+          break;
+        case(0x000E):
+          V[0xF] = V[x] >> 7;
+          V[x] <<= 1;
+          break;
+      }
+    case(0x9000):
+      if(V[x] != V[y])
+        break;
     case(0xA000): // set index to register I
       I = nnn;
       break;
+    case(0xB000):
+      pc = nnn + V[0];
+    case(0xC000):
+      V[x] = (rand() % (0xFF + 1)) & kk;
+      break;
     case(0xD000): // draw pixel at specified x, y location`
-      std::cout << "Draw" << std::endl;
       V[15] = 0;
 
       for(int i = 0; i < n; i++) {
@@ -139,7 +209,42 @@ void Chip8::cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Tex
           }
         }
       }
+        break;
+    case(0xE000):
+      switch(opcode & 0x00FF) {
+        break;
+      }
+    case(0xF000):
+      switch(opcode & 0x00FF) {
+        case(0x0007):
+          V[x] = delay_timer;
+        case(0x0015):
+          delay_timer = V[x];
+        case(0x001E):
+          V[I] = V[I] + V[x];
+          break;
+        case(0x0029):
+          V[I] = V[x] * 0x5;
+          break;
+        case(0x0033):
+          V[I] = V[x] / 100;
+          V[I + 1] = (V[x] / 10) % 10;
+          V[I + 2] = V[x] % 10;
+          break;
+        case(0x0055):
+          for(int i = 0; i <= V[x]; i++)
+            memory[I + i] = V[i];
+          break;
+        case(0x0065):
+          for(int i = 0; i <= V[x]; i++)
+            V[i] = memory[I + i];
+          I = I + V[x] + 1;
+          break;
+
+      }
   }
+  if(delay_timer > 0)
+    --delay_timer;
 }
 
 // destructor

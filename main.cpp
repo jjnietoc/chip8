@@ -8,7 +8,7 @@ int main() {
     // create new chip8 object
     Chip8 chip8; 
     chip8.init();   
-    chip8.load_rom("ibm.ch8");
+    chip8.load_rom("Zero Demo [zeroZshadow, 2007].ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
@@ -24,14 +24,12 @@ int main() {
     while(running) {
       start = SDL_GetTicks();
       SDL_Event event;
-      while(SDL_PollEvent(&event)) {
-        switch(event.type) {
-          case SDL_QUIT:
-            running = false;
+      if(SDL_PollEvent(&event)) {
+        if(event.type == SDL_QUIT) {
           break;
         }
-         chip8.cycle(&window, &events, &renderer, &texture);
       }
+      chip8.cycle(&window, &events, &renderer, &texture);
     }
   }
 

@@ -2,6 +2,8 @@
 #define CHIP8_H_
 
 #include "display.h"
+#include <_types/_uint32_t.h>
+#include <_types/_uint8_t.h>
 #include <array>
 #include <SDL2/SDL.h>
 
@@ -12,26 +14,33 @@ const int FONTSIZE = 80;
 class Chip8 {
   private:
     // Memory
-  std::array<u_int8_t, MEMSIZE> memory;
+    std::array<u_int8_t, MEMSIZE> memory;
     // Registers
     u_int8_t V[SIZE];
     // Stack
     u_int16_t stack[SIZE];
     // Font space in memory
-     std::array<u_int8_t, FONTSIZE> font;
+    std::array<u_int8_t, FONTSIZE> font;
     
 
     // Parts
     u_int16_t I, pc; // register I, program counter
     u_int8_t delay_timer, sound_timer, sp; // delay timer, sound timer, stack pointer
-    
+    uint8_t display[64 * 32];
+    uint32_t pixels[64 * 32] = {};
+    bool draw_flag;
+
     // Externals
     int keypad[16]; // keypad 
 
   public:
     Chip8();  // constructor
+    ~Chip8(); // destructor
+
     void load_font();
     void init();
+    void load_rom(std::string const& path);
+    void cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t);
 
     // dissassembler and decoder functions
     // optional
@@ -42,17 +51,7 @@ class Chip8 {
     u_int16_t fetch_nnn();
     u_int8_t fetch_kk();
 
-    bool draw_flag;
-    uint8_t display[64 * 32];
-    uint32_t pixels[64 * 32] = {};
-    // load rom
-    void load_rom(std::string const& path);
-
-    // main loop function
-    void cycle(sdl2::Window *w, sdl2::Events *e, sdl2::Renderer *r, sdl2::Texture *t);
-
-    ~Chip8(); // destructor
-};
+ };
 
 
 #endif
