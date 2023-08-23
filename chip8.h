@@ -43,6 +43,8 @@ class Chip8 {
     void load_font();
     void load_rom(std::string const& path);
     void cycle(sdl2::Renderer *r, sdl2::Texture *t);
+    void clear_stack();
+    void clear_display();
 
     // dissassembler and decoder functions
     // optional
