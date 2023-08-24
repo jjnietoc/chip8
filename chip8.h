@@ -47,20 +47,9 @@ class Chip8 {
     void cycle(sdl2::Renderer *r, sdl2::Texture *t);
     void clear_stack();
     void clear_display();
-    void press_key(SDL_Event e);
-    void release_key(SDL_Event e);
 
-    // dissassembler and decoder functions
-    // optional
-    u_int16_t fetch_opcode();
-    u_int8_t fetch_x();
-    u_int8_t fetch_y();
-    u_int8_t fetch_nibble();
-    u_int16_t fetch_nnn();
-    u_int8_t fetch_kk();
-
-  std::array<uint8_t, SIZE> keymap; // sdl key mapping
- uint8_t keypad[SIZE]; // keypad
+    std::array<uint8_t, SIZE> keymap; // sdl key mapping
+    uint8_t keypad[SIZE]; // keypad
 
  };
 
