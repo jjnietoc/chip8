@@ -1,6 +1,7 @@
 #ifndef CHIP8_H_
 #define CHIP8_H_
 
+#include <_types/_uint8_t.h>
 #include <array>
 #include <SDL2/SDL.h>
 
@@ -31,7 +32,8 @@ class Chip8 {
     
 
     // Externals
-    int keypad[SIZE]; // keypad 
+   
+  
     uint8_t display[WIDTH * HEIGHT];
     uint32_t pixels[WIDTH * HEIGHT] = {};
 
@@ -45,6 +47,8 @@ class Chip8 {
     void cycle(sdl2::Renderer *r, sdl2::Texture *t);
     void clear_stack();
     void clear_display();
+    void press_key(SDL_Event e);
+    void release_key(SDL_Event e);
 
     // dissassembler and decoder functions
     // optional
@@ -54,6 +58,9 @@ class Chip8 {
     u_int8_t fetch_nibble();
     u_int16_t fetch_nnn();
     u_int8_t fetch_kk();
+
+  std::array<uint8_t, SIZE> keymap; // sdl key mapping
+ uint8_t keypad[SIZE]; // keypad
 
  };
 
