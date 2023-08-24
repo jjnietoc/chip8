@@ -1,3 +1,4 @@
+#include <_types/_uint8_t.h>
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -16,6 +17,7 @@ Chip8::Chip8(){
   sp = 0;
   delay_timer = 0;
   sound_timer = 0;
+
   font = {
       0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
       0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -34,6 +36,13 @@ Chip8::Chip8(){
       0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
       0xF0, 0x80, 0xF0, 0x80, 0x80  // F
   };
+
+  keymap = {
+    SDLK_1, SDLK_2, SDLK_3, SDLK_4,
+    SDLK_q, SDLK_w, SDLK_e, SDLK_r,
+    SDLK_a, SDLK_s, SDLK_d, SDLK_f,
+    SDLK_z, SDLK_x, SDLK_c, SDLK_v,
+  }; 
 
   load_font();
   clear_stack();
@@ -58,9 +67,25 @@ void Chip8::clear_stack()
 void Chip8::clear_display()
 {
   for(int i = 0; i < WIDTH * SCALE; i++)
-  {
     display[i] = 0;
-  }
+}
+
+void Chip8::press_key(SDL_Event e) 
+{
+  for(int i = 0; i < SIZE; i++)
+    if(e.key.keysym.sym == keymap[i]) {
+      std::cout << keymap[i] << std::endl;
+      keypad[i] = 1;
+    }
+}
+
+void Chip8::release_key(SDL_Event e)
+{
+  for(int i = 0; i < SIZE; i++)
+    if(e.key.keysym.sym == keymap[i]) {
+      std::cout << keymap[i] << std::endl;
+      keypad[i] = 0;
+    }
 }
 
 void Chip8::load_rom(std::string const& path)
@@ -88,17 +113,19 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
   switch(opcode & 0xF000)
   {
     case(0x0000):
-      if(opcode == 0x00E0) { // clear screen
-        for(int i = 0; i < WIDTH * HEIGHT; i++)
-        {
-          display[i] = 0;
-        }
-      break;
+      switch(opcode & 0x000F) { // clear screen
+        case(0x0000):
+          for(int i = 0; i < WIDTH * HEIGHT; i++)
+          {
+            display[i] = 0;
+          }
+          break;
 
-      } else if(opcode == 0x00EE){  // return from subroutine
+        case(0x000E):  // return from subroutine
           pc = stack[--sp];
-        }
-      break;
+        break;
+      }
+    break;
 
     case(0x1000):   // jump
       pc = nnn;
@@ -106,7 +133,7 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
 
     case(0x2000):   // call subroutine at mem location nnn
       stack[sp] = pc;
-      sp++;
+      ++sp;
       pc = nnn;
       break; 
 
@@ -200,18 +227,6 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
       V[x] = (std::rand() % (0xFF)) & kk;   // set Vx to random byte AND kk
       break;
 
-    case(0xE000):
-      switch(opcode & 0x00FF) {
-        case(0x009E):   // skip if key[Vx] IS pressed
-          if(keypad[V[x]] == 1)
-            pc += 2;
-          break;
-        case(0x00A1):   // skip if key[Vx] is NOT pressed
-          if(keypad[V[x]] == 0)
-            pc += 2;
-          break;
-      }
-
     case(0xD000): // draw pixel at specified x, y location
       V[15] = 0;
 
@@ -234,46 +249,68 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
       r->draw(t->get_texture(), pixels);
       break;
 
-    case(0xF000):
+    case(0xE000):
+      switch(opcode & 0x00FF) {
+        case(0x009E):   // skip if key[Vx] IS pressed
+          if(keypad[V[x]] == 1)
+            pc += 2;
+          break;
+        case(0x00A1):   // skip if key[Vx] is NOT pressed
+          if(keypad[V[x]] == 0)
+            pc += 2;
+          break;
+      }
+    break;
+
+    case(0xF000):   // await key press and store it in Vx
       switch(opcode & 0x00FF) {
         case(0x0007):   // set Vx to delay timer
           V[x] = delay_timer;
           break;
-
+        case(0x00A1): 
+          {
+          bool k_press;
+          k_press = false;
+          for(int i = 0; i < SIZE; ++i)
+            if(keypad[i] != 0) {
+              V[x] = i;
+              k_press = true;
+            }
+          if(!k_press)
+            return;
+          }
+          break;
         case(0x0015):   // set delay timer to Vx
           delay_timer = V[x];
           break;
-
+        case(0x0018):   // set sound timer to Vx
+          sound_timer = V[x];
+          break;
         case(0x001E):   // set I = I + Vx
           if(I + V[x] > 0xFFF)
             V[0xF] = 1;
           else
             V[0xF] = 0;
           I += V[x];
-          break;
-        
-        case(0x0018):   // set sound timer to Vx
-          sound_timer = V[x];
-          break;
+          break;    
 
         case(0x0029):   // set I to the location of the hex sprite of Vx
-          V[I] = V[x] * 0x5;
+          I = V[x] * 0x5;
           break;
-
         case(0x0033):   // store the 100, 10, 1 representation of Vx into memory
           memory[I] = V[x] / 100;
           memory[I + 1] = (V[x] / 10) % 10;
           memory[I + 2] = V[x] % 10;
           break;
-
         case(0x0055):   // store registers V0 to Vx in memory starting at I
-          for(uint8_t i = 0; i <= x; i++)
+          for(uint8_t i = 0; i <= x; ++i)
             memory[I + i] = V[i];
+          I += V[x] + 1;
           break;
-
         case(0x0065):   // read registers V0 to Vx from memory startin at I
-          for(uint8_t i = 0; i <= x; i++)
+          for(uint8_t i = 0; i <= x; ++i)
             V[i] = memory[I + i];
+          I += V[x] + 1;
           break;
       }
     break;
