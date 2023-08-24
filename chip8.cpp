@@ -70,24 +70,6 @@ void Chip8::clear_display()
     display[i] = 0;
 }
 
-void Chip8::press_key(SDL_Event e) 
-{
-  for(int i = 0; i < SIZE; i++)
-    if(e.key.keysym.sym == keymap[i]) {
-      std::cout << keymap[i] << std::endl;
-      keypad[i] = 1;
-    }
-}
-
-void Chip8::release_key(SDL_Event e)
-{
-  for(int i = 0; i < SIZE; i++)
-    if(e.key.keysym.sym == keymap[i]) {
-      std::cout << keymap[i] << std::endl;
-      keypad[i] = 0;
-    }
-}
-
 void Chip8::load_rom(std::string const& path)
 {
   // create buffer and copy data to memory

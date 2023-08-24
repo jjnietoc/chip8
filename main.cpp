@@ -9,7 +9,7 @@ int main() {
   try {
     // create new chip8 object
     Chip8 chip8; 
-    chip8.load_rom("Breakout [Carmelo Cortez, 1979].ch8");
+    chip8.load_rom("roms/Maze (alt) [David Winter, 199x].ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
