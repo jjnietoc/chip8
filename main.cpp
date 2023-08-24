@@ -38,11 +38,7 @@ int main() {
               chip8.keypad[i] = 0;
             }
         }
-        //  chip8.press_key(event);
-      //  if(event.type == SDL_KEYUP) 
-        //  chip8.release_key(event);
-          
-        }
+      }
       chip8.cycle(&renderer, &texture);
 
       std::this_thread::sleep_for(std::chrono::microseconds(1200));
