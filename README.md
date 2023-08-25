@@ -13,12 +13,11 @@ I've included some ROMs in case anyone wants to try it (you would have to build 
 
 
 ### Notes:
-* Audio implementation is still pending
+* Emulator now beeps! It uses cout '\a' currently but I need to find a more elegant solution
 * There's a movement bug when you start roms that require movement
 
 ### CURRENT: 
 
-- [ ] Implement sound_timer & sdl_sound
 - [ ] Fix movement bug
 - [ ] General cleaning and final touches
 
@@ -33,4 +32,5 @@ I've included some ROMs in case anyone wants to try it (you would have to build 
 - [x] Refactor and clean code
 - [x] Finish instructions
 - [x] Implement keyboard
+- [x] Implement sound_timer & sdl_sound
 
