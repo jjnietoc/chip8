@@ -1,11 +1,11 @@
-#include <_types/_uint8_t.h>
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <vector>
 #include <cstdlib>
-#include <SDL2/SDL.h>
 
+
+#include <SDL2/SDL.h>
 #include "chip8.h"
 #include "display.h"
 
@@ -249,7 +249,7 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
         case(0x0007):   // set Vx to delay timer
           V[x] = delay_timer;
           break;
-        case(0x00A1): 
+        case(0x00A1):   // wait for key pressed, and store it in V[x]
           {
           bool k_press;
           k_press = false;
@@ -301,7 +301,7 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
     --delay_timer;
   if(sound_timer > 0)
     if(sound_timer == 1)
-      // sdl_sound;
+      std::cout << '\a' << std::endl;
   --sound_timer;
 }
 

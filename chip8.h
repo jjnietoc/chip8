@@ -1,7 +1,6 @@
-#ifndef CHIP8_H_
-#define CHIP8_H_
+#ifndef CHIP8_H
+#define CHIP8_H
 
-#include <_types/_uint8_t.h>
 #include <array>
 #include <SDL2/SDL.h>
 
@@ -32,8 +31,6 @@ class Chip8 {
     
 
     // Externals
-   
-  
     uint8_t display[WIDTH * HEIGHT];
     uint32_t pixels[WIDTH * HEIGHT] = {};
 
