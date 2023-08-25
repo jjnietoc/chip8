@@ -1,15 +1,16 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "chip8.h"
-#include "display.h"
 #include <stdexcept>
 
-int main() {
+#include "chip8.h"
+#include "display.h"
+
+int main(void) {
   try {
     // create new chip8 object
     Chip8 chip8; 
-    chip8.load_rom("roms/Maze (alt) [David Winter, 199x].ch8");
+    chip8.load_rom("roms/Pong (1 player) (1).ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
