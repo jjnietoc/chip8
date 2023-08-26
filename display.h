@@ -1,5 +1,5 @@
-#ifndef DISPLAY_H_
-#define DISPLAY_H_
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include <SDL2/SDL.h>
 #include <stdexcept>

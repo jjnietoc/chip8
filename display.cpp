@@ -61,3 +61,6 @@ void Renderer::draw(SDL_Texture* texture, uint32_t pixels[WIDTH*SCALE]) {
                                  SDL_PIXELFORMAT_ARGB8888,
                                  SDL_TEXTUREACCESS_STREAMING, 64, 32);
     }
+
+
+
