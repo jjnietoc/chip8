@@ -26,13 +26,14 @@ class Chip8 {
   
     // register I, program counter
     u_int16_t I, pc;     
+
     // delay timer, sound timer, stack pointer
     u_int8_t delay_timer, sound_timer, sp;     
     
 
     // Externals
-    uint8_t display[WIDTH * HEIGHT];
-    uint32_t pixels[WIDTH * HEIGHT] = {};
+    uint8_t display[WIDTH * HEIGHT];  // array for window data
+    uint32_t pixels[WIDTH * HEIGHT] = {};   // array for pixel manipulation
 
 
   public:

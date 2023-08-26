@@ -3,9 +3,8 @@
 #include <iterator>
 #include <vector>
 #include <cstdlib>
-
-
 #include <SDL2/SDL.h>
+
 #include "chip8.h"
 #include "display.h"
 
@@ -51,7 +50,7 @@ Chip8::Chip8(){
 
 void Chip8::load_font()
 {
-  for (int i = 0; i < 80; i++)
+  for (int i = 0; i < FONTSIZE; i++)
     memory[i] = font[i];
 }
 

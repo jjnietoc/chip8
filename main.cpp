@@ -42,6 +42,7 @@ int main(void) {
       }
       chip8.cycle(&renderer, &texture);
 
+      // delay for normal emulation
       std::this_thread::sleep_for(std::chrono::microseconds(1200));
     }
   }
