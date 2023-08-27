@@ -10,7 +10,7 @@ int main(void) {
   try {
     // create new chip8 object
     Chip8 chip8; 
-    chip8.load_rom("roms/Pong (1 player) (1).ch8");
+    chip8.load_rom("roms/test_opcode.ch8");
 
     // create all sdl2 instances
     sdl2::Application app;
