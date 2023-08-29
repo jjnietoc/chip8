@@ -42,7 +42,7 @@ void Renderer::draw(SDL_Texture* texture, uint32_t pixels[WIDTH*SCALE]) {
       SDL_UpdateTexture(texture,
                         NULL,
                         pixels,
-                        WIDTH*sizeof(u_int32_t));
+                        WIDTH*sizeof(uint32_t));
       SDL_RenderCopy(renderer,
                      texture,
                      NULL,

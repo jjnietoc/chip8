@@ -80,15 +80,15 @@ void Chip8::load_rom(std::string const& path)
 void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t) 
 {
   // read 2 bytes in big endian and add pc by 1
-  u_int16_t opcode = memory[pc] << 8 | memory[pc + 1];
+  uint16_t opcode = memory[pc] << 8 | memory[pc + 1];
   pc += 2;
 
   // Fetch opcodes by type
-  u_int8_t x = (opcode >> 8) & 0x0F;
-  u_int8_t y = (opcode >> 4) & 0x0F;
-  u_int8_t n = opcode & 0x0F;
-  u_int16_t nnn = opcode & 0x0FFF;
-  u_int8_t kk = opcode & 0x0FF;
+  uint8_t x = (opcode >> 8) & 0x0F;
+  uint8_t y = (opcode >> 4) & 0x0F;
+  uint8_t n = opcode & 0x0F;
+  uint16_t nnn = opcode & 0x0FFF;
+  uint8_t kk = opcode & 0x0FF;
 
   // Decode and execute
   switch(opcode & 0xF000)
@@ -213,7 +213,7 @@ void Chip8::cycle(sdl2::Renderer *r, sdl2::Texture *t)
 
       for(int i = 0; i < n; i++) {
         for(int j = 0; j < 8; j++) {
-          u_int8_t pixel = (memory[I + i] & (0x80 >> j)) != 0;
+          uint8_t pixel = (memory[I + i] & (0x80 >> j)) != 0;
           if(pixel) {
             int index = 
               (V[x] + j) % WIDTH +

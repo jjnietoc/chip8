@@ -13,22 +13,22 @@ const int FONTSIZE = 80;
 class Chip8 {
   private:
     // Memory
-    std::array<u_int8_t, MEMSIZE> memory;
+    std::array<uint8_t, MEMSIZE> memory;
 
     // Registers
-    u_int8_t V[SIZE];
+    uint8_t V[SIZE];
 
     // Stack
-    u_int16_t stack[SIZE];
+    uint16_t stack[SIZE];
 
     // Font space in memory
-    std::array<u_int8_t, FONTSIZE> font;
+    std::array<uint8_t, FONTSIZE> font;
   
     // register I, program counter
-    u_int16_t I, pc;     
+    uint16_t I, pc;     
 
     // delay timer, sound timer, stack pointer
-    u_int8_t delay_timer, sound_timer, sp;     
+    uint8_t delay_timer, sound_timer, sp;     
     
 
     // Externals
