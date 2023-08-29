@@ -4,9 +4,9 @@
 #include <SDL2/SDL.h>
 #include <stdexcept>
 
-const int WIDTH = 64;
-const int HEIGHT = 32;
-const int SCALE = 10;
+static constexpr int WIDTH = 64;
+static constexpr int HEIGHT = 32;
+static constexpr int SCALE = 10;
 
 namespace sdl2 {
 

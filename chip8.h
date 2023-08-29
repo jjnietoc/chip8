@@ -6,9 +6,9 @@
 
 #include "display.h"
 
-const int SIZE = 16;
-const int MEMSIZE = 4096;
-const int FONTSIZE = 80;
+static constexpr int SIZE = 16;
+static constexpr  int MEMSIZE = 4096;
+static constexpr int FONTSIZE = 80;
 
 class Chip8 {
   private:
@@ -32,7 +32,7 @@ class Chip8 {
     
 
     // Externals
-    uint8_t display[WIDTH * HEIGHT];  // array for window data
+    std::array<uint8_t, WIDTH * HEIGHT> display;  // array for window data
     uint32_t pixels[WIDTH * HEIGHT] = {};   // array for pixel manipulation
 
 
